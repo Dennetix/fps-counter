@@ -9,7 +9,7 @@ const refreshOverlay = (canvas) => {
 
         overlay.style.background = 'rgba(0, 0, 0, 0.4)';
         overlay.style.color = '#fff';
-        overlay.style.position = 'fixed';
+        overlay.style.position = 'absolute';
         overlay.style.fontFamily = 'Helvetica';
         overlay.style.fontSize = '11px';
         overlay.style.padding = '5px 8px';
