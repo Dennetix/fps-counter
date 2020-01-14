@@ -1,10 +1,10 @@
 {
     "manifest_version": 2,
     "name": "FPSCounter",
-    "version": "0.2.1",
-    
+    "version": "0.2.2",
+
     "description": "Injects a FPS counter into every site containing a canvas.",
-    
+
     "content_scripts": [
         {
           "matches": ["*://*/*"],

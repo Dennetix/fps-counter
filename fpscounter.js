@@ -1,5 +1,5 @@
 let overlay;
-let intervalId;
+let animationId;
 
 const refreshOverlay = (canvas) => {
     //Create overlay div and add it to the body
@@ -11,23 +11,28 @@ const refreshOverlay = (canvas) => {
         overlay.style.color = '#fff';
         overlay.style.position = 'absolute';
         overlay.style.fontFamily = 'Helvetica';
-        overlay.style.fontSize = '11px';
+        overlay.style.fontSize = '12px';
         overlay.style.padding = '5px 8px';
     }
     overlay.style.top = canvas.offsetTop + 'px';
     overlay.style.left = canvas.offsetLeft + 'px';
     overlay.innerHTML = '-';
 
-    // Stop last interval
-    if (intervalId)
-        clearInterval(intervalId);
+    // Stop last animation
+    if (animationId)
+        cancelAnimationFrame(animationId);
 
     // Create new interval
-    let lastCount = window.mozPaintCount;
+    let count = 0;
+    let lastCount = 0;
     let lastTime = performance.now();
-    intervalId = setInterval(() => {
-        overlay.innerHTML = Math.round((lastCount + -(lastCount = window.mozPaintCount)) / (lastTime + -(lastTime = performance.now())) * 1000);
-    }, 750);
+    const animation = (time) => {
+        if (time - lastTime >= 750)
+            overlay.innerHTML = Math.round((lastCount - (lastCount = count)) / (lastTime - (lastTime = time)) * 1000);
+        count++;
+        requestAnimationFrame(animation);
+    };
+    animationId = requestAnimationFrame(animation);
 };
 
 // Check for an existing canvas at page load
@@ -47,7 +52,7 @@ const observer = new MutationObserver((mutations) => {
             }
         }
 
-        if (canvas) 
+        if (canvas)
             break;
     }
 });
