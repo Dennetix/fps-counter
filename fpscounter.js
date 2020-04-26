@@ -1,7 +1,12 @@
 let overlay;
 let animationId;
 
-const refreshOverlay = (canvas) => {
+const createOverlay = () => {
+    const canvas = document.getElementsByTagName('canvas')[0];
+    if (!canvas) {
+        return;
+    }
+
     //Create overlay div and add it to the body
     if (!overlay) {
         overlay = document.createElement('div');
@@ -22,7 +27,7 @@ const refreshOverlay = (canvas) => {
     if (animationId)
         cancelAnimationFrame(animationId);
 
-    // Create new interval
+    // Create new animation
     let count = 0;
     let lastCount = 0;
     let lastTime = performance.now();
@@ -35,26 +40,24 @@ const refreshOverlay = (canvas) => {
     animationId = requestAnimationFrame(animation);
 };
 
-// Check for an existing canvas at page load
-const existingCanvas = document.getElementsByTagName('canvas')[0];
-if (existingCanvas)
-    refreshOverlay(existingCanvas);
-
 // Create a mutation observer to check if a new canvas was added to the dom later
 const observer = new MutationObserver((mutations) => {
-    let canvas;
     for (const mutation of mutations) {
         for (const el of mutation.addedNodes) {
-            canvas = el.getElementsByTagName('canvas')[0];
+            const canvas = el.nodeName.toLowerCase() == 'canvas' ? el : el.getElementsByTagName('canvas')[0];
             if (canvas) {
-                refreshOverlay(canvas);
-                break;
+                createOverlay();
+                return;
             }
         }
 
-        if (canvas)
-            break;
+        if (overlay && mutation.removedNodes.length > 0 && document.getElementsByTagName('canvas').length === 0) {
+            cancelAnimationFrame(animationId);
+            overlay.remove();
+            overlay = undefined;
+        }
     }
 });
 
+createOverlay();
 observer.observe(document.body, { childList: true, subtree: true });

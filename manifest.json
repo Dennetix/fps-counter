@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "FPSCounter",
-    "version": "0.2.2",
+    "version": "0.2.3",
 
     "description": "Injects a FPS counter into every site containing a canvas.",
 
